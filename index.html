@@ -21,9 +21,89 @@
   </head>
 
   <body>
+    <div class="header-tela-3">
+      <p class="buzzquizz">BuzzQuizz</p>
+    </div>
+    <div class="tela-3">
+      <h1>Crie suas perguntas</h1>
 
+      <div class="pergunta retraida">
+        <ion-icon name="create-outline" onclick="expandirPergunta(this)"></ion-icon>
+        <div class="caixa-inputs">
+          <p>Pergunta 1</p>
+          <input
+            id="criar-pergunta1-input-textoPergunta"
+            type="text"
+            placeholder="Texto da pergunta"
+          />
+          <input
+            id="criar-pergunta1-input-corFundoPergunta"
+            type="text"
+            placeholder="Cor de fundo da pergunta"
+          />
+        </div>
+        <div class="caixa-inputs">
+          <p>Resposta correta</p>
+          <input
+            id="criar-pergunta1-input-respostaCorreta"
+            type="text"
+            placeholder="Resposta correta"
+          />
+          <input
+            id="criar-pergunta1-input-urlRespostaCorreta"
+            type="text"
+            placeholder="URL da imagem"
+          />
+        </div>
+        <div class="caixa-inputs">
+          <p>Respostas incorretas</p>
+          <input
+            id="criar-pergunta1-input-respostaIncorreta1"
+            type="text"
+            placeholder="Resposta Incorreta 1"
+          />
+          <input
+            id="criar-pergunta1-input-urlRespostaIncorreta1"
+            type="text"
+            placeholder="URL da imagem 1"
+          />
+        </div>
+        <div class="caixa-inputs">
+          <input
+            id="criar-pergunta1-input-respostaIncorreta2"
+            type="text"
+            placeholder="Resposta Incorreta 2"
+          />
+          <input
+            id="criar-pergunta1-input-urlRespostaIncorreta2"
+            type="text"
+            placeholder="URL da imagem 2"
+          />
+        </div>
+        <div class="caixa-inputs">
+          <input
+            id="criar-pergunta1-input-respostaIncorreta3"
+            type="text"
+            placeholder="Resposta Incorreta 3"
+          />
+          <input
+            id="criar-pergunta1-input-urlRespostaIncorreta3"
+            type="text"
+            placeholder="URL da imagem 3"
+          />
+        </div>
+      </div>
+    </div>
     <script src="./JS/script1.js"></script>
     <script src="./JS/script2.js"></script>
     <script src="./JS/script3.js"></script>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
   </body>
 </html>
