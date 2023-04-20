@@ -1,3 +1,5 @@
+axios.defaults.headers.common['Authorization'] = 'M813n9erPvENXeuGPzKDL1Iu';
+
 const tela3Comeco = 
 `
 <div class="header-tela-3">
@@ -26,3 +28,4 @@ function expandirPergunta(pgt){
   pgt.parentElement.classList.remove("retraida");
   console.log(pgt.parentElement);
 }
+// showTela3();
