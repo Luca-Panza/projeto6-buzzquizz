@@ -1,3 +1,5 @@
+axios.defaults.headers.common['Authorization'] = 'M813n9erPvENXeuGPzKDL1Iu';
+
 const tela3Comeco = 
 `
 <div class="header-tela-3">
@@ -19,4 +21,4 @@ function showTela3(){
     document.querySelector("body").innerHTML = tela3Comeco;
 }
 
-showTela3();
+// showTela3();
