@@ -6,11 +6,11 @@
   .tela-3 {
     padding-top: 107px;
     width: 100vw;
-    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     background-color: #fafafa;
+    overflow-x: hidden;
   }
 
   .header-tela-3 {
@@ -41,7 +41,7 @@
     font-size: 20px;
     line-height: 23px;
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 8px;
     color: #000000;
   }
 
@@ -50,10 +50,20 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    align-items: center;
-    padding: 8px 18px 18px 18px;
+    align-items: start;
     background: #ffffff;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+    text-align: start !important;
+    padding-bottom: 28px;
+  }
+
+  .caixa-inputs p{
+    font-family: "Roboto";
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 23px;
+    text-align: center;
+    color: #000000;
   }
 
   input {
@@ -100,5 +110,53 @@
 
   button:active {
     background: #831f19;
+  }
+
+  .pergunta{
+    margin-top: 22px;
+    padding-top: 18px;
+    padding-left: 18px;
+    padding-right: 18px;
+    background-color: #ffffff;
+    width: 100%;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .pergunta ion-icon{
+    opacity: 0;
+    font-size: 26px;
+  }
+
+  .retraida{
+    background-color: #ffffff;
+    overflow: hidden;
+    padding: 17px;
+    height: 74px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .retraida ion-icon{
+    opacity: 1;
+    color:#000000;
+  }
+
+  .tituloRetraida{
+    padding: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .retraida .tituloRetraida{
+    margin-bottom: 50px;
+  }
+
+  .pergunta p{
+    font-family: "Roboto";
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 23px;
+    text-align: left;
+    color: #000000;
   }
 }
