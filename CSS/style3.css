@@ -35,7 +35,7 @@
     line-height: 43px;
   }
 
-  h1 {
+  .tela3 h1 {
     font-family: "Roboto";
     font-weight: 700;
     font-size: 20px;
@@ -80,7 +80,7 @@
     color: #bababa;
   }
 
-  button {
+  .tela3 button {
     width: 324px;
     height: 54px;
     left: 24px;

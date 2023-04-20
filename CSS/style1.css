@@ -7,13 +7,14 @@
 .page1 {
   display: block;
   width: 100%;
-  height: calc(100vh - 69px);
+  min-height: calc(100vh - 69px);
 }
 
 .page1 > header {
   width: 100%;
   height: 69px;
   position: fixed;
+  z-index: 1;
   top: 0;
   left: 0;
   display: flex;
@@ -31,6 +32,7 @@ main {
   margin: 145px auto 0 auto;
   width: 1100px;
   height: 100%;
+  padding-bottom: 50px;
 }
 
 .user-quizz, .all-quizz {
@@ -60,14 +62,15 @@ main {
 .no-quizz button {
   font-family: 'Roboto';
   font-size: 21px;
-  padding: 7px 10px;
+  padding: 7px 20px;
   color: #EC362D;
   border: 1px dashed #EC362D;
+  background-color: #ffffff;
   border-radius: 50px;
   cursor: pointer;
 }
 
-.quizz-list header {
+.quizz-list > header {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -102,6 +105,15 @@ li {
   font-size: 19px;
 }
 
+.gradient {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.5) 64.58%, #000000 100%)
+}
+
 li img {
   width: 100%;
   height: 100%;
@@ -111,7 +123,7 @@ li img {
 li h1 {
   width: 85%;
   position: absolute;
-  left: 25px;
+  left: 17px;
   bottom: 12px;
   color: #ffffff;
 }
@@ -122,4 +134,30 @@ li h1 {
 
 .hidden {
   display: none;
+}
+
+@media (max-width: 1100px) {
+  main {
+    width: 90%;
+  }
+
+  .user-quizz, .all-quizz {
+    width: 100%;
+    margin: 0;
+  }
+
+  .quizz-list header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 17px;
+  }
+
+  .all-quizz header {
+    margin-top: 34px;
+  }
+
+  li {
+    width: 100%;
+  }
 }
