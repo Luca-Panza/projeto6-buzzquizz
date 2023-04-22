@@ -19,7 +19,81 @@ const tela3Comeco = `
 gerarListaDePerguntas(10);
 
 function showTela3(){
-    document.querySelector("body").innerHTML = tela3Comeco;
+    document.querySelector("body").innerHTML += tela3Comeco;
+}
+
+function valido(inp){
+  if(inp == '' || inp == undefined || inp == null)return false;
+  else return true;
+}
+
+function showCriarPerguntas(){
+  quiz.title = document.getElementById("criar-quiz-titulo").value;
+  quiz.image = document.getElementById("criar-quiz-url").value;
+  
+  nmrDePerguntas = document.getElementById("criar-quiz-nmrPerguntas").value;
+  nmrNiveis = document.getElementById("criar-quiz-nmrNiveis").value;
+
+  if(!valido(quiz.title))return;
+  if(!valido(quiz.image))return;
+  if(!valido(nmrDePerguntas))return;
+  if(!valido(nmrNiveis))return;
+
+  tela3.innerHTML = `
+      <h1>Crie suas perguntas</h1>`;
+  gerarListaDePerguntas(nmrDePerguntas);
+  tela3.innerHTML += `
+  <button onclick="showCriarNiveis()">Prosseguir pra criar níveis</button>`;
+}
+
+function showCriarNiveis(){
+  for(let i = 1; i <= nmrDePerguntas; i++){
+    let pergunta = {
+      text: document.getElementById(`criar-pergunta${i}-texto`).value,
+      color: document.getElementById(`criar-pergunta${i}-cor`).value,
+      answers: [
+				{
+					text: document.getElementById(`criar-pergunta${i}-respostaCorreta`).value,
+					image: document.getElementById(`criar-pergunta${i}-respostaCorretaURL`).value,
+					isCorrectAnswer: true
+				},
+				{
+					text: document.getElementById(`criar-pergunta${i}-respostaIncorreta1`).value,
+					image: document.getElementById(`criar-pergunta${i}-respostaIncorreta1URL`).value,
+					isCorrectAnswer: false
+				},
+        {
+					text: document.getElementById(`criar-pergunta${i}-respostaIncorreta2`).value,
+					image: document.getElementById(`criar-pergunta${i}-respostaIncorreta2URL`).value,
+					isCorrectAnswer: false
+				},
+        {
+					text: document.getElementById(`criar-pergunta${i}-respostaIncorreta3`).value,
+					image: document.getElementById(`criar-pergunta${i}-respostaIncorreta3URL`).value,
+					isCorrectAnswer: false
+				}
+			]
+    }
+    quiz.questions.push(pergunta);
+  }
+  tela3.innerHTML = '<h1>Agora, decida os níveis!</h1>';
+  for(let i = 1; i <= nmrNiveis; i++){
+    tela3.innerHTML += `
+    <div class="nivel retraida">
+        <div class="tituloRetraida">
+          <p>Nivel ${i}</p>
+          <ion-icon name="create-outline" onclick="expandirPergunta(this)"></ion-icon>
+        </div>
+        <div class="caixa-inputs">
+          <input id="criar-nivel${i}-titulo" type="text" placeholder="Titulo do nivel">
+          <input id="criar-nivel${i}-porcento" type="text" placeholder="% de acerto mínima">
+          <input id="criar-nivel${i}-url" type="text" placeholder="URL da imagem do nível">
+          <textarea id="criar-nivel${i}-descricao" type="text" placeholder="Descrição do nível"></textarea>
+        </div>
+      </div>`
+  }
+  document.querySelector(".tela-3 > .nivel").classList.remove("retraida");
+
 }
 
 function gerarPergunta(numero){
