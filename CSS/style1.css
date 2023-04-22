@@ -103,6 +103,11 @@ li {
   border-radius: 5px;
   font-family: 'Roboto';
   font-size: 19px;
+  cursor: pointer;
+}
+
+li:hover {
+  opacity: 80%;
 }
 
 .gradient {
