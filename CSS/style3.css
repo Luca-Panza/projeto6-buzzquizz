@@ -1,8 +1,6 @@
 * {
   box-sizing: border-box;
 }
-
-@media (max-width: 1100px) {
   .tela-3 {
     padding-top: 107px;
     width: 100vw;
@@ -35,13 +33,13 @@
     line-height: 43px;
   }
 
-  .tela3 h1 {
+  .tela-3 h1 {
     font-family: "Roboto";
     font-weight: 700;
     font-size: 20px;
     line-height: 23px;
     text-align: center;
-    margin-bottom: 8px;
+    margin-bottom: 29px;
     color: #000000;
   }
 
@@ -54,7 +52,10 @@
     background: #ffffff;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
     text-align: start !important;
+
     padding-bottom: 28px;
+    padding: 18px;
+    
   }
 
   .caixa-inputs p{
@@ -64,9 +65,10 @@
     line-height: 23px;
     text-align: center;
     color: #000000;
+    
   }
 
-  input {
+  input, textarea{
     width: 100%;
     height: 45px;
     border: 1px solid #d1d1d1;
@@ -81,7 +83,7 @@
     color: #000000;
   }
 
-  input::placeholder {
+  input::placeholder, textarea::placeholder {
     font-family: "Roboto";
     font-style: italic;
     font-weight: 400;
@@ -90,7 +92,7 @@
     color: #bababa;
   }
 
-  .tela3 button {
+  .tela-3 button {
     width: 324px;
     height: 54px;
     left: 24px;
@@ -99,6 +101,7 @@
     border: none;
     border-radius: 15px;
     margin-top: 30px;
+    margin-bottom: 60px;
 
     font-family: "Roboto";
     font-weight: 400;
@@ -108,21 +111,25 @@
     color: #fff5f4;
   }
 
-  button:active {
+  textarea{
+    height: 340px;
+    margin-top: 14px;
+    resize: none;
+  }
+
+  .tela-3 button:active {
     background: #831f19;
   }
 
-  .pergunta{
-    margin-top: 22px;
+  .pergunta, .nivel{
+    margin-bottom: 12px;
     padding-top: 18px;
-    padding-left: 18px;
-    padding-right: 18px;
     background-color: #ffffff;
     width: 100%;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
   }
 
-  .pergunta ion-icon{
+  .pergunta ion-icon, .nivel ion-icon{
     opacity: 0;
     font-size: 26px;
   }
@@ -130,9 +137,10 @@
   .retraida{
     background-color: #ffffff;
     overflow: hidden;
-    padding: 17px;
     height: 74px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+    margin-top: 12px;
+    margin-bottom: 12px;
   }
 
   .retraida ion-icon{
@@ -151,7 +159,12 @@
     margin-bottom: 50px;
   }
 
-  .pergunta p{
+  .pergunta .tituloRetraida, .nivel .tituloRetraida{
+    margin-left: 18px;
+    margin-bottom: 0px;
+  }
+
+  .pergunta p, .nivel p{
     font-family: "Roboto";
     font-weight: 700;
     font-size: 20px;
@@ -159,4 +172,3 @@
     text-align: left;
     color: #000000;
   }
-}

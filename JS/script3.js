@@ -1,9 +1,6 @@
 axios.defaults.headers.common['Authorization'] = 'M813n9erPvENXeuGPzKDL1Iu';
-const tela3 = document.querySelector(".tela-3");
+const body = document.querySelector("body");
 const tela3Comeco = `
-<div class="header-tela-3">
-        <p class="buzzquizz">BuzzQuizz</p>
-      </div>
     <div class="tela-3">
       <h1>Comece pelo comeco</h1>
       <div class="caixa-inputs">
@@ -12,11 +9,29 @@ const tela3Comeco = `
         <input id="criar-quiz-nmrPerguntas" type="text" placeholder="Quantidade de perguntas do quizz">
         <input id="criar-quiz-nmrNiveis" type="text" placeholder="Quantidade de níveis do quizz">
       </div>
-      <button>Prosseguir pra criar perguntas</button>
+      <button onclick="showCriarPerguntas()">Prosseguir pra criar perguntas</button>
     </div>
 `
+var quiz = {
+	title: "",
+	image: "",
+	questions: [],
+	levels: [],
+}
+var nmrDePerguntas = 0;
+var nmrNiveis = 0;
 
-gerarListaDePerguntas(10);
+showHeader();
+showTela3();
+
+const tela3 = document.querySelector(".tela-3");
+
+function showHeader(){
+  body.innerHTML += `
+  <div class="header-tela-3">
+    <p class="buzzquizz">BuzzQuizz</p>
+  </div>`;
+}
 
 function showTela3(){
     document.querySelector("body").innerHTML += tela3Comeco;
@@ -93,7 +108,26 @@ function showCriarNiveis(){
       </div>`
   }
   document.querySelector(".tela-3 > .nivel").classList.remove("retraida");
+  tela3.innerHTML += `<button onclick="finalizar()">Finalizar Quizz</button>`
+}
 
+function finalizar(){
+  for(let i = 1; i <= nmrNiveis; i++){
+    let nivel = {
+      title: document.getElementById(`criar-nivel${i}-titulo`).value,
+      image: document.getElementById(`criar-nivel${i}-url`).value,
+      text: document.getElementById(`criar-nivel${i}-descricao`).value,
+      minValue: Number(document.getElementById(`criar-nivel${i}-porcento`).value),
+    }
+    quiz.levels.push(nivel);
+  }
+  let prom = axios.post('https://mock-api.driven.com.br/api/vm/buzzquizz/quizzes', quiz);
+  prom.then((resp) => {
+    console.log(resp);
+  })
+  prom.catch((resp) => {
+    console.log(resp.response);
+  })
 }
 
 function gerarPergunta(numero){
@@ -104,7 +138,6 @@ function gerarPergunta(numero){
           <ion-icon name="create-outline" onclick="expandirPergunta(this)"></ion-icon>
         </div>
         <div class="caixa-inputs">
-          
           <input id="criar-pergunta${numero}-texto" type="text" placeholder="Texto da pergunta">
           <input id="criar-pergunta${numero}-cor" type="text" placeholder="Cor de fundo da pergunta">
         </div>
@@ -139,7 +172,7 @@ function gerarListaDePerguntas(quantia){
 
 function expandirPergunta(pgt){
   let avo = pgt.parentNode.parentNode;
-  document.querySelectorAll(".pergunta").forEach((pergunta) =>{
+  document.querySelectorAll('.' + avo.classList[0]).forEach((pergunta) =>{
     pergunta.classList.add("retraida");
   })
   avo.classList.remove("retraida");
