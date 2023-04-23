@@ -1,6 +1,32 @@
 axios.defaults.headers.common["Authorization"] = "M813n9erPvENXeuGPzKDL1Iu";
 const body = document.querySelector("body");
-const tela3Comeco = `
+var quiz = {
+  title: "",
+  image: "",
+  questions: [],
+  levels: [],
+};
+var nmrPerguntas = 0;
+var nmrNiveis = 0;
+var tela3;
+
+scriptTela3();
+
+function scriptTela3() {
+  showHeader();
+  showTela3();
+  tela3 = document.querySelector(".tela-3");
+}
+
+function showHeader() {
+  body.innerHTML += `
+  <div class="header-tela-3">
+    <p class="buzzquizz">BuzzQuizz</p>
+  </div>`;
+}
+
+function showTela3() {
+  const tela3Comeco = `
     <div class="tela-3">
       <h1>Comece pelo comeco</h1>
       <div class="caixa-inputs">
@@ -12,34 +38,16 @@ const tela3Comeco = `
       <button onclick="showCriarPerguntas()">Prosseguir pra criar perguntas</button>
     </div>
 `;
-var quiz = {
-  title: "",
-  image: "",
-  questions: [],
-  levels: [],
-};
-var nmrPerguntas = 0;
-var nmrNiveis = 0;
-
-showHeader();
-showTela3();
-
-const tela3 = document.querySelector(".tela-3");
-
-function showHeader() {
-  body.innerHTML += `
-  <div class="header-tela-3">
-    <p class="buzzquizz">BuzzQuizz</p>
-  </div>`;
-}
-
-function showTela3() {
   document.querySelector("body").innerHTML += tela3Comeco;
 }
 
-function valido(inp) {
-  if (inp == "" || inp == undefined || inp == null) return false;
-  else return true;
+function URLInvalida(URLString) {
+  try {
+    const testeurl = new URL(URLString);
+    return false;
+  } catch (lixo) {
+    return true;
+  }
 }
 
 function showCriarPerguntas() {
@@ -51,60 +59,94 @@ function showCriarPerguntas() {
     gerarListaDePerguntas(nmrPerguntas);
     tela3.innerHTML += `
   <button onclick="showCriarNiveis()">Prosseguir pra criar níveis</button>`;
+  console.log(quiz.questions);
   } catch (erro) {
     alert(erro);
+    quiz.questions = [];
   }
 }
 
-function showCriarNiveis() {
-  for (let i = 1; i <= nmrDePerguntas; i++) {
-    let pergunta = {
-      text: document.getElementById(`criar-pergunta${i}-texto`).value,
-      color: document.getElementById(`criar-pergunta${i}-cor`).value,
-      answers: [
-        {
-          text: document.getElementById(`criar-pergunta${i}-respostaCorreta`)
-            .value,
-          image: document.getElementById(
-            `criar-pergunta${i}-respostaCorretaURL`
-          ).value,
-          isCorrectAnswer: true,
-        },
-        {
-          text: document.getElementById(`criar-pergunta${i}-respostaIncorreta1`)
-            .value,
-          image: document.getElementById(
-            `criar-pergunta${i}-respostaIncorreta1URL`
-          ).value,
-          isCorrectAnswer: false,
-        },
-        {
-          text: document.getElementById(`criar-pergunta${i}-respostaIncorreta2`)
-            .value,
-          image: document.getElementById(
-            `criar-pergunta${i}-respostaIncorreta2URL`
-          ).value,
-          isCorrectAnswer: false,
-        },
-        {
-          text: document.getElementById(`criar-pergunta${i}-respostaIncorreta3`)
-            .value,
-          image: document.getElementById(
-            `criar-pergunta${i}-respostaIncorreta3URL`
-          ).value,
-          isCorrectAnswer: false,
-        },
-      ],
-    };
-    quiz.questions.push(pergunta);
+function validarPergunta(nmr) {
+  let perguntaTexto = document.getElementById(
+    `criar-pergunta${nmr}-texto`
+  ).value;
+  let perguntaCor = document.getElementById(`criar-pergunta${nmr}-cor`).value;
+  let resposta = [
+    {
+      text: document.getElementById(`criar-pergunta${nmr}-respostaCorreta`)
+        .value,
+      image: document.getElementById(`criar-pergunta${nmr}-respostaCorretaURL`)
+        .value,
+      isCorrectAnswer: true,
+    },
+    {
+      text: document.getElementById(`criar-pergunta${nmr}-respostaIncorreta1`)
+        .value,
+      image: document.getElementById(
+        `criar-pergunta${nmr}-respostaIncorreta1URL`
+      ).value,
+      isCorrectAnswer: false,
+    },
+    {
+      text: document.getElementById(`criar-pergunta${nmr}-respostaIncorreta2`)
+        .value,
+      image: document.getElementById(
+        `criar-pergunta${nmr}-respostaIncorreta2URL`
+      ).value,
+      isCorrectAnswer: false,
+    },
+    {
+      text: document.getElementById(`criar-pergunta${nmr}-respostaIncorreta3`)
+        .value,
+      image: document.getElementById(
+        `criar-pergunta${nmr}-respostaIncorreta3URL`
+      ).value,
+      isCorrectAnswer: false,
+    },
+  ];
+
+  if (perguntaTexto < 20) throw `Texto da pergunta ${nmr} muito curto!`;
+  if (!/^#[0-9A-F]{6}$/i.test(perguntaCor))
+    throw `Valor hexadecimal da pergunta ${nmr} invalido`;
+
+  let blueprintPergunta = {
+    title: perguntaTexto,
+    color: perguntaCor,
+    answers: [],
+  };
+
+  for (let i = 0; i < resposta.length; i++) {
+    if (resposta[i].text == null || resposta[i].text == "")
+      if (i === 0)
+        throw `Texto da resposta correta da pergunta ${nmr} esta vazio!`;
+      else
+        throw `Texto da resposta incorreta ${i} da pergunta ${nmr} esta vazio!`;
+    if (URLInvalida(resposta[i].image))
+      if (i === 0)
+        throw `URL da resposta correta da pergunta ${nmr} esta vazio!`;
+      else throw `URL da resposta incorreta ${i} da pergunta ${nmr} invalida!`;
+
+    blueprintPergunta.answers.push(resposta[i]);
   }
-  tela3.innerHTML = "<h1>Agora, decida os níveis!</h1>";
-  for (let i = 1; i <= nmrNiveis; i++) {
-    tela3.innerHTML += `
+
+  quiz.questions.push(blueprintPergunta);
+}
+
+function showCriarNiveis() {
+  try {
+
+    for (let i = 1; i <= nmrPerguntas; i++) {
+      validarPergunta(i);
+    }
+
+    tela3.innerHTML = "<h1>Agora, decida os níveis!</h1>";
+
+    for (let i = 1; i <= nmrNiveis; i++) {
+      tela3.innerHTML += `
     <div class="nivel retraida">
         <div class="tituloRetraida">
           <p>Nivel ${i}</p>
-          <ion-icon name="create-outline" onclick="expandirPergunta(this)"></ion-icon>
+          <ion-icon name="create-outline" onclick="expandirDiv(this)"></ion-icon>
         </div>
         <div class="caixa-inputs">
           <input id="criar-nivel${i}-titulo" type="text" placeholder="Titulo do nivel">
@@ -113,9 +155,12 @@ function showCriarNiveis() {
           <textarea id="criar-nivel${i}-descricao" type="text" placeholder="Descrição do nível"></textarea>
         </div>
       </div>`;
+    }
+    document.querySelector(".tela-3 > .nivel").classList.remove("retraida");
+    tela3.innerHTML += `<button onclick="finalizar()">Finalizar Quizz</button>`;
+  } catch (erro) {
+    alert(erro);
   }
-  document.querySelector(".tela-3 > .nivel").classList.remove("retraida");
-  tela3.innerHTML += `<button onclick="finalizar()">Finalizar Quizz</button>`;
 }
 
 function finalizar() {
@@ -147,7 +192,7 @@ function gerarPergunta(numero) {
   <div class="pergunta retraida">
         <div class="tituloRetraida">
           <p>Pergunta ${numero}</p>
-          <ion-icon name="create-outline" onclick="expandirPergunta(this)"></ion-icon>
+          <ion-icon name="create-outline" onclick="expandirDiv(this)"></ion-icon>
         </div>
         <div class="caixa-inputs">
           <input id="criar-pergunta${numero}-texto" type="text" placeholder="Texto da pergunta">
@@ -182,10 +227,10 @@ function gerarListaDePerguntas(quantia) {
   document.querySelector(".tela-3 > .pergunta").classList.remove("retraida");
 }
 
-function expandirPergunta(pgt) {
+function expandirDiv(pgt) {
   let avo = pgt.parentNode.parentNode;
-  document.querySelectorAll("." + avo.classList[0]).forEach((pergunta) => {
-    pergunta.classList.add("retraida");
+  document.querySelectorAll("." + avo.classList[0]).forEach((elemento) => {
+    elemento.classList.add("retraida");
   });
   avo.classList.remove("retraida");
 }
@@ -193,7 +238,6 @@ function expandirPergunta(pgt) {
 function validarInfoQuiz() {
   let titulo = document.getElementById("criar-quiz-titulo").value;
   let URLquiz = document.getElementById("criar-quiz-url").value;
-  let URLinvalida = false;
 
   nmrPerguntas = Number(
     document.getElementById("criar-quiz-nmrPerguntas").value
@@ -202,12 +246,10 @@ function validarInfoQuiz() {
 
   if (titulo.length < 20) throw "Titulo muito curto!";
   else if (titulo.length > 65) throw "Titulo muito grande!";
-  try{const validarURL = new URL(URLquiz);}
-  catch(er){URLinvalida = true}
-  if(URLinvalida)throw "URL invalida!";
+  if (URLInvalida(URLquiz)) throw "URL invalida!";
   else if (nmrPerguntas < 3) throw "O quizz deve ter no minimo 3 perguntas!";
   else if (nmrNiveis < 2) throw "O quizz deve ter no minimo 2 niveis!";
-  
+
   quiz.title = titulo;
   quiz.image = URLquiz;
 }
