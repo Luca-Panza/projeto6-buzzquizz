@@ -91,12 +91,16 @@ function gerarListaDePerguntas() {
   document.querySelector(".tela-3 > .pergunta").classList.remove("retraida");
 }
 
+
+
 function expandirDiv(secao) {
   let avo = secao.parentNode.parentNode;
   document.querySelectorAll("." + avo.classList[0]).forEach((elemento) => {
     elemento.classList.add("retraida");
   });
   avo.classList.remove("retraida");
+  avo.scrollIntoView();
+  tela3.scrollTop -= 75;
 }
 
 function validarInfoDoQuizz() {
