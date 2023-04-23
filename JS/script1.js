@@ -3,16 +3,13 @@ axios.defaults.headers.common['Authorization'] = 'M813n9erPvENXeuGPzKDL1Iu';
 // Home page template/layout
 const tela1Template = `
     <section class="page1">
-      <header>
-        BuzzQuizz
-      </header>
       <main>
         <div class="user-quizz">
           <div class="no-quizz ">
             <p>
               Você não criou nenhum<br>quizz ainda :(
             </p>
-            <button data-test="create-btn">Criar Quizz</button>
+            <button data-test="create-btn" onclick="scriptTela3()">Criar Quizz</button>
           </div>
           <div class="quizz-list hidden">
             <header>
@@ -36,7 +33,7 @@ const tela1Template = `
 `;
 
 function showTela1 () {
-  document.querySelector("body").innerHTML = tela1Template;
+  document.querySelector("body").innerHTML += tela1Template;
 }
 
 function getQuizz () {
@@ -90,4 +87,4 @@ function getQuizz () {
     .catch(error => console.log(error));
 }
 
-// getQuizz();
+getQuizz();

@@ -13,24 +13,17 @@ var existeNivelZero = false;
 
 //scriptTela3();
 
-function inserirHeader() {
-  body.innerHTML += `
-  <div class="header-tela-3">
-    <p class="buzzquizz">BuzzQuizz</p>
-  </div>`;
-}
-
 function irParaTela3() {
   const tela3Comeco = `
     <div class="tela-3">
       <h1>Comece pelo comeco</h1>
       <div class="caixa-inputs">
-        <input id="criar-quizz-titulo" type="text" placeholder="Título do seu quizz">
-        <input id="criar-quizz-url" type="text" placeholder="URL da imagem do seu quizz">
-        <input id="criar-quizz-numeroDePerguntas" type="text" placeholder="Quantidade de perguntas do quizz">
-        <input id="criar-quizz-numeroDeNiveis" type="text" placeholder="Quantidade de níveis do quizz">
+        <input id="criar-quizz-titulo" data-test="title-input" type="text" placeholder="Título do seu quizz">
+        <input id="criar-quizz-url" data-test="img-input" type="text" placeholder="URL da imagem do seu quizz">
+        <input id="criar-quizz-numeroDePerguntas" data-test="questions-amount-input" type="text" placeholder="Quantidade de perguntas do quizz">
+        <input id="criar-quizz-numeroDeNiveis" data-test="levels-amount-input" type="text" placeholder="Quantidade de níveis do quizz">
       </div>
-      <button onclick="irParaCriarPerguntas()">Prosseguir pra criar perguntas</button>
+      <button onclick="irParaCriarPerguntas()" data-test="go-create-questions">Prosseguir pra criar perguntas</button>
     </div>
 `;
   document.querySelector("body").innerHTML += tela3Comeco;
@@ -38,7 +31,7 @@ function irParaTela3() {
 }
 
 function scriptTela3() {
-  inserirHeader();
+  document.querySelector(".page1").remove();
   irParaTela3();
 }
 
@@ -53,32 +46,32 @@ function URLInvalida(URLString) {
 
 function gerarPergunta(indice) {
   return `
-  <div class="secao pergunta">
+  <div class="secao pergunta" data-test="question-ctn">
         <div class="tituloSecao">
           <p>Pergunta ${indice}</p>
-          <ion-icon name="create-outline" onclick="expandirDiv(this)"></ion-icon>
-        </div>
+          <ion-icon name="create-outline" onclick="expandirDiv(this)" data-test="toggle"></ion-icon>
+          </div>
         <div class="caixa-inputs">
-          <input id="criar-pergunta${indice}-texto" type="text" placeholder="Texto da pergunta">
-          <input id="criar-pergunta${indice}-cor" type="text" placeholder="Cor de fundo da pergunta">
+          <input id="criar-pergunta${indice}-texto" data-test="question-input" type="text" placeholder="Texto da pergunta">
+          <input id="criar-pergunta${indice}-cor" data-test="question-color-input" type="text" placeholder="Cor de fundo da pergunta">
         </div>
         <div class="caixa-inputs">
           <p>Resposta correta</p>
-          <input id="criar-pergunta${indice}-respostaCorreta" type="text" placeholder="Resposta correta">
-          <input id="criar-pergunta${indice}-respostaCorretaURL" type="text" placeholder="URL da imagem">
+          <input id="criar-pergunta${indice}-respostaCorreta" data-test="correct-answer-input" type="text" placeholder="Resposta correta">
+          <input id="criar-pergunta${indice}-respostaCorretaURL" data-test="correct-img-input" type="text" placeholder="URL da imagem">
         </div>
         <div class="caixa-inputs">
           <p>Respostas Incorretas</p>
-          <input id="criar-pergunta${indice}-respostaIncorreta1" type="text" placeholder="Resposta Incorreta 1">
-          <input id="criar-pergunta${indice}-respostaIncorreta1URL" type="text" placeholder="URL da imagem 1">
+          <input id="criar-pergunta${indice}-respostaIncorreta1" data-test="wrong-answer-input" type="text" placeholder="Resposta Incorreta 1">
+          <input id="criar-pergunta${indice}-respostaIncorreta1URL" data-test="wrong-img-input" type="text" placeholder="URL da imagem 1">
         </div>
         <div class="caixa-inputs">
-          <input id="criar-pergunta${indice}-respostaIncorreta2" type="text" placeholder="Resposta Incorreta 2">
-          <input id="criar-pergunta${indice}-respostaIncorreta2URL" type="text" placeholder="URL da imagem 2">
+          <input id="criar-pergunta${indice}-respostaIncorreta2" data-test="wrong-answer-input" type="text" placeholder="Resposta Incorreta 2">
+          <input id="criar-pergunta${indice}-respostaIncorreta2URL" data-test="wrong-img-input" type="text" placeholder="URL da imagem 2">
         </div>
         <div class="caixa-inputs">
-          <input id="criar-pergunta${indice}-respostaIncorreta3" type="text" placeholder="Resposta Incorreta 3">
-          <input id="criar-pergunta${indice}-respostaIncorreta3URL" type="text" placeholder="URL da imagem 3">
+          <input id="criar-pergunta${indice}-respostaIncorreta3" data-test="wrong-answer-input" type="text" placeholder="Resposta Incorreta 3">
+          <input id="criar-pergunta${indice}-respostaIncorreta3URL" data-test="wrong-img-input" type="text" placeholder="URL da imagem 3">
         </div>
       </div>
   `;
@@ -140,7 +133,7 @@ function irParaCriarPerguntas() {
       <h1>Crie suas perguntas</h1>`;
     gerarListaDePerguntas();
     tela3.innerHTML += `
-  <button onclick="irParaCriarNiveis()">Prosseguir pra criar níveis</button>`;
+  <button onclick="irParaCriarNiveis()" data-test="go-create-levels">Prosseguir pra criar níveis</button>`;
   } catch (erro) {
     alert(erro);
     quizz.questions = [];
@@ -232,21 +225,21 @@ function irParaCriarNiveis() {
 
     for (let i = 1; i <= numeroDeNiveis; i++) {
       tela3.innerHTML += `
-    <div class="secao nivel">
+    <div class="secao nivel" data-test="level-ctn">
         <div class="tituloSecao">
           <p>Nivel ${i}</p>
-          <ion-icon name="create-outline" onclick="expandirDiv(this)"></ion-icon>
+          <ion-icon name="create-outline" onclick="expandirDiv(this)" data-test="toggle"></ion-icon>
         </div>
         <div class="caixa-inputs">
-          <input id="criar-nivel${i}-titulo" type="text" placeholder="Título do nível">
-          <input id="criar-nivel${i}-porcento" type="text" placeholder="% de acerto mínima">
-          <input id="criar-nivel${i}-url" type="text" placeholder="URL da imagem do nível">
-          <textarea id="criar-nivel${i}-descricao" type="text" placeholder="Descrição do nível"></textarea>
+          <input id="criar-nivel${i}-titulo" data-test="level-input" type="text" placeholder="Título do nível">
+          <input id="criar-nivel${i}-porcento" data-test="level-percent-input" type="text" placeholder="% de acerto mínima">
+          <input id="criar-nivel${i}-url" data-test="level-img-input" type="text" placeholder="URL da imagem do nível">
+          <textarea id="criar-nivel${i}-descricao" data-test="level-description-input" type="text" placeholder="Descrição do nível"></textarea>
         </div>
       </div>`;
     }
     document.querySelector(".tela-3 > .secao").classList.add("expandida");
-    tela3.innerHTML += `<button onclick="finalizar()">Finalizar Quizz</button>`;
+    tela3.innerHTML += `<button onclick="finalizar()" data-test="finish">Finalizar Quizz</button>`;
   } catch (erro) {
     alert(erro);
   }
@@ -304,7 +297,7 @@ function finalizar() {
       console.log(resp.data);
       tela3.innerHTML = ` 
       <h1>Seu quizz está pronto!</h1>
-      <li class="resultado" data-id="${resp.data.id}">
+      <li class="resultado" data-id="${resp.data.id}" data-test="success-banner">
         <div class="gradient"></div>
         <img
           src="${resp.data.image}"
@@ -312,8 +305,8 @@ function finalizar() {
         />
         <h1>${resp.data.title}</h1>
       </li>
-      <button class="acessar" onclick="">Acessar Quizz</button>
-      <button class="voltar" onclick="getQuizz()">Voltar pra home</button>`;
+      <button class="acessar" onclick="" data-test="go-quiz">Acessar Quizz</button>
+      <button class="voltar" onclick="getQuizz()" data-test="go-home">Voltar pra home</button>`;
       existeNivelZero = false;
     });
     prom.catch((resp) => {
