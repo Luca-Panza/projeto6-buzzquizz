@@ -1,14 +1,17 @@
 * {
   box-sizing: border-box;
+  flex-shrink: 0;
 }
+
 .tela-3 {
   padding-top: 107px;
   width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   background-color: #fafafa;
-  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 .header-tela-3 {
@@ -66,8 +69,8 @@
   color: #000000;
 }
 
-input,
-textarea {
+.tela-3 input,
+.tela-3 textarea {
   width: 100%;
   height: 45px;
   border: 1px solid #d1d1d1;
@@ -82,8 +85,13 @@ textarea {
   color: #000000;
 }
 
-input::placeholder,
-textarea::placeholder {
+.tela-3 textarea{
+  margin-top: 14px;
+  resize: none;
+}
+
+.tela-3 input::placeholder,
+.tela-3 textarea::placeholder {
   font-family: "Roboto";
   font-style: italic;
   font-weight: 400;
@@ -111,66 +119,94 @@ textarea::placeholder {
   color: #fff5f4;
 }
 
-textarea {
-  height: 340px;
-  margin-top: 14px;
-  resize: none;
-}
-
 .tela-3 button:active {
   background: #831f19;
 }
 
-.pergunta,
-.nivel {
-  margin-bottom: 12px;
-  padding-top: 18px;
-  background-color: #ffffff;
-  width: 100%;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+.tela-3 button.acessar {
+  width: 220px;
+  height: 44px;
+  margin-bottom: 0px;
 }
 
-.pergunta ion-icon,
-.nivel ion-icon {
-  opacity: 0;
-  font-size: 26px;
-  cursor: default;
+.tela-3 button.voltar {
+  width: 220px;
+  height: 44px;
+  background-color: transparent;
+  margin-top: 10px !important;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 21px;
+  text-align: center;
+
+  color: #818181;
 }
 
-.retraida {
+.tela-3 button.voltar:active{
+  background: transparent;
+  color: #831f19;
+}
+
+.pergunta.expandida{
+  max-height: 875px;
+}
+
+.nivel.expandida{
+  max-height: 603px;
+}
+
+.secao {
   background-color: #ffffff;
   overflow: hidden;
-  height: 74px;
+  max-height: 74px;
+  width: 100%;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
   margin-top: 12px;
   margin-bottom: 12px;
+  transition: max-height 1s ease-in-out;
 }
 
-.retraida ion-icon {
+.secao ion-icon {
   opacity: 1;
   color: #000000;
   cursor: pointer;
 }
 
-.tituloRetraida {
-  padding: 4px;
+.secao.expandida {
+  margin-bottom: 12px;
+  padding-top: 18px;
+  background-color: #ffffff;
+  height: auto;
+  transition: max-height 1s ease-in-out;
+}
+
+.secao.expandida ion-icon {
+  opacity: 0;
+  font-size: 26px;
+  cursor: default;
+}
+
+.tituloSecao {
+  padding-left: 18px;
+  padding-right: 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.retraida .tituloRetraida {
+.secao .tituloSecao {
   margin-bottom: 50px;
+  margin-top: 22px;
 }
 
-.pergunta .tituloRetraida,
-.nivel .tituloRetraida {
-  margin-left: 18px;
+.expandida .tituloSecao {
   margin-bottom: 0px;
+  margin-top: 0px;
 }
 
-.pergunta p,
-.nivel p {
+.secao p {
   font-family: "Roboto";
   font-weight: 700;
   font-size: 20px;
@@ -204,25 +240,10 @@ textarea {
   list-style-type: none;
 }
 
-button.acessar {
-  width: 220px;
-  height: 44px;
-  margin-bottom: 0px;
-}
-
-button.voltar {
-  width: 219.64px;
-  height: 44px;
-  background-color: transparent;
-  margin-top: 10px !important;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 21px;
-  text-align: center;
-
-  color: #818181;
+@media (max-width: 1100px){
+  .tela-3 textarea {
+    height: 340px;
+  }
 }
 
 @media (min-width: 1100px) {
@@ -234,17 +255,21 @@ button.voltar {
     width: 600px;
   }
 
-  button {
+  .tela-3 button {
     margin-top: 75px !important;
   }
 
-  .pergunta,
-  .nivel {
+  .nivel.expandida{
+    max-height: 316px;
+  }
+
+  .secao {
     width: 600px;
   }
 
-  .resultado{
+  .resultado {
     width: 500px;
+    height: fit-content;
   }
 
   .resultado h1 {

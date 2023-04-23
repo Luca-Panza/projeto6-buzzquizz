@@ -11,7 +11,7 @@ var numeroDeNiveis = 0;
 var tela3 = null;
 var existeNivelZero = false;
 
-scriptTela3();
+//scriptTela3();
 
 function inserirHeader() {
   body.innerHTML += `
@@ -53,8 +53,8 @@ function URLInvalida(URLString) {
 
 function gerarPergunta(indice) {
   return `
-  <div class="pergunta retraida">
-        <div class="tituloRetraida">
+  <div class="secao pergunta">
+        <div class="tituloSecao">
           <p>Pergunta ${indice}</p>
           <ion-icon name="create-outline" onclick="expandirDiv(this)"></ion-icon>
         </div>
@@ -88,19 +88,26 @@ function gerarListaDePerguntas() {
   for (let i = 1; i <= numeroDePerguntas; i++) {
     tela3.innerHTML += gerarPergunta(i);
   }
-  document.querySelector(".tela-3 > .pergunta").classList.remove("retraida");
+  document.querySelector(".tela-3 > .secao").classList.add("expandida");
+  tela3.scrollTop = 0;
 }
 
-
+function acompanharTransition(transicionando) {
+  let acompanhar = setInterval(() => {
+    transicionando.scrollIntoView();
+    tela3.scrollTop -= 75;
+  }, 10);
+  setTimeout(() => {
+    clearInterval(acompanhar);
+  }, 1000);
+}
 
 function expandirDiv(secao) {
   let avo = secao.parentNode.parentNode;
-  document.querySelectorAll("." + avo.classList[0]).forEach((elemento) => {
-    elemento.classList.add("retraida");
-  });
-  avo.classList.remove("retraida");
-  avo.scrollIntoView();
-  tela3.scrollTop -= 75;
+  let expandidaAnteriormente = document.querySelector(".expandida");
+  expandidaAnteriormente.classList.remove("expandida");
+  avo.classList.add("expandida");
+  acompanharTransition(avo);
 }
 
 function validarInfoDoQuizz() {
@@ -225,8 +232,8 @@ function irParaCriarNiveis() {
 
     for (let i = 1; i <= numeroDeNiveis; i++) {
       tela3.innerHTML += `
-    <div class="nivel retraida">
-        <div class="tituloRetraida">
+    <div class="secao nivel">
+        <div class="tituloSecao">
           <p>Nivel ${i}</p>
           <ion-icon name="create-outline" onclick="expandirDiv(this)"></ion-icon>
         </div>
@@ -238,7 +245,7 @@ function irParaCriarNiveis() {
         </div>
       </div>`;
     }
-    document.querySelector(".tela-3 > .nivel").classList.remove("retraida");
+    document.querySelector(".tela-3 > .secao").classList.add("expandida");
     tela3.innerHTML += `<button onclick="finalizar()">Finalizar Quizz</button>`;
   } catch (erro) {
     alert(erro);
@@ -294,7 +301,8 @@ function finalizar() {
       quizz
     );
     prom.then((resp) => {
-      tela3 = ` 
+      console.log(resp.data);
+      tela3.innerHTML = ` 
       <h1>Seu quizz está pronto!</h1>
       <li class="resultado" data-id="${resp.data.id}">
         <div class="gradient"></div>
@@ -302,10 +310,10 @@ function finalizar() {
           src="${resp.data.image}"
           alt=""
         />
-        <h1>${resp.data.text}</h1>
+        <h1>${resp.data.title}</h1>
       </li>
       <button class="acessar" onclick="">Acessar Quizz</button>
-      <button class="voltar" onclick="getQuizz()">Voltar pra home</button>`
+      <button class="voltar" onclick="getQuizz()">Voltar pra home</button>`;
       existeNivelZero = false;
     });
     prom.catch((resp) => {
