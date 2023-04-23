@@ -8,7 +8,7 @@ var quizz = {
 };
 var numeroDePerguntas = 0;
 var numeroDeNiveis = 0;
-var tela3;
+var tela3 = null;
 var existeNivelZero = false;
 
 scriptTela3();
@@ -34,12 +34,12 @@ function irParaTela3() {
     </div>
 `;
   document.querySelector("body").innerHTML += tela3Comeco;
+  tela3 = document.querySelector(".tela-3");
 }
 
 function scriptTela3() {
   inserirHeader();
   irParaTela3();
-  tela3 = document.querySelector(".tela-3");
 }
 
 function URLInvalida(URLString) {
@@ -290,8 +290,19 @@ function finalizar() {
       quizz
     );
     prom.then((resp) => {
-      console.log(resp);
-      alert("suseso parsa");
+      tela3 = ` 
+      <h1>Seu quizz está pronto!</h1>
+      <li class="resultado" data-id="${resp.data.id}">
+        <div class="gradient"></div>
+        <img
+          src="${resp.data.image}"
+          alt=""
+        />
+        <h1>${resp.data.text}</h1>
+      </li>
+      <button class="acessar" onclick="">Acessar Quizz</button>
+      <button class="voltar" onclick="getQuizz()">Voltar pra home</button>`
+      existeNivelZero = false;
     });
     prom.catch((resp) => {
       console.log(resp.response);
