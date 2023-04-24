@@ -294,7 +294,14 @@ function finalizar() {
       quizz
     );
     prom.then((resp) => {
-      console.log(resp.data);
+      let quizzCriado = {
+        id: resp.data.id,
+      };
+
+      let arrayDeQuizzes = JSON.parse(localStorage.getItem("ids"));
+      arrayDeQuizzes.push(quizzCriado);
+      localStorage.setItem("ids", JSON.stringify(arrayDeQuizzes));
+      
       tela3.innerHTML = ` 
       <h1>Seu quizz está pronto!</h1>
       <li class="resultado" data-id="${resp.data.id}" data-test="success-banner">
