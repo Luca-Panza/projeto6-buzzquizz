@@ -330,6 +330,7 @@
   }
 
   .txt_answers {
+    width: 330px;
     font-family: "Roboto";
     font-style: normal;
     font-weight: 700;
