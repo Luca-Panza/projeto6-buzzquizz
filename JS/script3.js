@@ -11,8 +11,6 @@ var numeroDeNiveis = 0;
 var tela3 = null;
 var existeNivelZero = false;
 
-//scriptTela3();
-
 function irParaTela3() {
   const tela3Comeco = `
     <div class="tela-3">
@@ -31,7 +29,10 @@ function irParaTela3() {
 }
 
 function scriptTela3() {
-  document.querySelector(".page1").remove();
+  let paginaHome = document.querySelector(".page1");
+  let paginaQuizz = document.querySelector("parte-do-luca");
+  if (paginaHome != null) paginaHome.style.display = "none";
+  if (paginaQuizz != null) paginaQuizz.style.display = "none";
   irParaTela3();
 }
 
@@ -299,9 +300,13 @@ function finalizar() {
       };
 
       let arrayDeQuizzes = JSON.parse(localStorage.getItem("ids"));
+      console.log("array de quizes: ", arrayDeQuizzes);
+      if (arrayDeQuizzes === null) arrayDeQuizzes = [];
       arrayDeQuizzes.push(quizzCriado);
+      console.log("array de quizes push: ", arrayDeQuizzes);
       localStorage.setItem("ids", JSON.stringify(arrayDeQuizzes));
-      
+      console.log("get: ", JSON.parse(localStorage.getItem("ids")));
+
       tela3.innerHTML = ` 
       <h1>Seu quizz está pronto!</h1>
       <li class="resultado" data-id="${resp.data.id}" data-test="success-banner">
@@ -313,11 +318,11 @@ function finalizar() {
         <h1>${resp.data.title}</h1>
       </li>
       <button class="acessar" onclick="" data-test="go-quiz">Acessar Quizz</button>
-      <button class="voltar" onclick="getQuizz()" data-test="go-home">Voltar pra home</button>`;
+      <button class="voltar" onclick="scriptTela1()" data-test="go-home">Voltar pra home</button>`;
       existeNivelZero = false;
     });
     prom.catch((resp) => {
-      console.log(resp.response);
+      alert("Erro " + resp.response.status);
     });
   } catch (erro) {
     alert(erro);
