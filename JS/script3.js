@@ -164,6 +164,11 @@ function validarPergunta(indiceDaPergunta) {
 
   let respostaIncorreta = {};
 
+  if (perguntaTexto < 20)
+    throw `Texto da pergunta ${indiceDaPergunta} muito curto!`;
+  if (!/^#[0-9A-F]{6}$/i.test(perguntaCor))
+    throw `Valor hexadecimal da pergunta ${indiceDaPergunta} inválido`;
+
   if (respostaCorreta.text == null || respostaCorreta.text == "")
     throw `Texto da resposta correta da pergunta ${indiceDaPergunta} está vazio!`;
   if (URLInvalida(respostaCorreta.image))
@@ -192,11 +197,6 @@ function validarPergunta(indiceDaPergunta) {
     if (URLInvalida(resposta[i].image))
       throw `URL da resposta incorreta da pergunta ${indiceDaPergunta} inválida!`;
   }
-
-  if (perguntaTexto < 20)
-    throw `Texto da pergunta ${indiceDaPergunta} muito curto!`;
-  if (!/^#[0-9A-F]{6}$/i.test(perguntaCor))
-    throw `Valor hexadecimal da pergunta ${indiceDaPergunta} inválido`;
 
   let blueprintPergunta = {
     title: perguntaTexto,
