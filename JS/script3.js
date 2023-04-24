@@ -186,14 +186,16 @@ function validarPergunta(indiceDaPergunta) {
       ).value,
       isCorrectAnswer: false,
     };
-    if(respostaIncorreta.text != null && respostaIncorreta.text != "")resposta.push(respostaIncorreta);
+    if (respostaIncorreta.text != null && respostaIncorreta.text != "")
+      resposta.push(respostaIncorreta);
   }
 
-  if(resposta.length < 2)throw `A pergunta ${indiceDaPergunta} deve ter pelo menos uma resposta incorreta!`
+  if (resposta.length < 2)
+    throw `A pergunta ${indiceDaPergunta} deve ter pelo menos uma resposta incorreta!`;
 
-  for(let i = 1; i < resposta.length; i++){
+  for (let i = 1; i < resposta.length; i++) {
     if (resposta[i].text == null || resposta[i].text == "")
-        throw `Texto da resposta incorreta da pergunta ${indiceDaPergunta} está vazio!`;
+      throw `Texto da resposta incorreta da pergunta ${indiceDaPergunta} está vazio!`;
     if (URLInvalida(resposta[i].image))
       throw `URL da resposta incorreta da pergunta ${indiceDaPergunta} inválida!`;
   }
@@ -238,6 +240,7 @@ function irParaCriarNiveis() {
     tela3.innerHTML += `<button onclick="finalizar()" data-test="finish">Finalizar Quizz</button>`;
   } catch (erro) {
     alert(erro);
+    quizz.questions = [];
   }
 }
 
