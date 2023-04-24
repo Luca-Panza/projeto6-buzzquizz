@@ -62,7 +62,7 @@ function getQuizz () {
 
         if(userQuiz) {
           userQuizzList.innerHTML += `
-          <li data-test="my-quiz" data-id='${quiz.id}' onclick="start_quiz(this)>
+          <li data-test="my-quiz" data-id='${quiz.id}' onclick="start_quiz(this.dataset.id)">
             <div class="gradient"></div>
             <img src="${quiz.image}" alt="">
             <h1>${quiz.title}</h1>
@@ -70,7 +70,7 @@ function getQuizz () {
         `;
         } else {
           allQuizzList.innerHTML += `
-            <li data-test="others-quiz" data-id='${quiz.id}' onclick="start_quiz(this)>
+            <li data-test="others-quiz" data-id='${quiz.id}' onclick="start_quiz(this.dataset.id)">
               <div class="gradient"></div>
               <img src="${quiz.image}" alt="">
               <h1>${quiz.title}</h1>

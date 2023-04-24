@@ -300,12 +300,13 @@ function finalizar() {
       };
 
       let arrayDeQuizzes = JSON.parse(localStorage.getItem("ids"));
-      console.log("array de quizes: ", arrayDeQuizzes);
+
       if (arrayDeQuizzes === null) arrayDeQuizzes = [];
       arrayDeQuizzes.push(quizzCriado);
-      console.log("array de quizes push: ", arrayDeQuizzes);
+
       localStorage.setItem("ids", JSON.stringify(arrayDeQuizzes));
-      console.log("get: ", JSON.parse(localStorage.getItem("ids")));
+
+      const id_quiz = resp.data.id;
 
       tela3.innerHTML = ` 
       <h1>Seu quizz está pronto!</h1>
@@ -317,7 +318,7 @@ function finalizar() {
         />
         <h1>${resp.data.title}</h1>
       </li>
-      <button class="acessar" onclick="" data-test="go-quiz">Acessar Quizz</button>
+      <button class="acessar" onclick="start_quiz(${id_quiz})" data-test="go-quiz">Acessar Quizz</button>
       <button class="voltar" onclick="scriptTela1()" data-test="go-home">Voltar pra home</button>`;
       existeNivelZero = false;
     });
