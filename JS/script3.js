@@ -145,47 +145,53 @@ function validarPergunta(indiceDaPergunta) {
   let perguntaTexto = document.getElementById(
     `criar-pergunta${indiceDaPergunta}-texto`
   ).value;
+
   let perguntaCor = document.getElementById(
     `criar-pergunta${indiceDaPergunta}-cor`
   ).value;
-  let resposta = [
-    {
+
+  let resposta = [];
+
+  let respostaCorreta = {
+    text: document.getElementById(
+      `criar-pergunta${indiceDaPergunta}-respostaCorreta`
+    ).value,
+    image: document.getElementById(
+      `criar-pergunta${indiceDaPergunta}-respostaCorretaURL`
+    ).value,
+    isCorrectAnswer: true,
+  };
+
+  let respostaIncorreta = {};
+
+  if (respostaCorreta.text == null || respostaCorreta.text == "")
+    throw `Texto da resposta correta da pergunta ${indiceDaPergunta} está vazio!`;
+  if (URLInvalida(respostaCorreta.image))
+    throw `URL da resposta correta da pergunta ${indiceDaPergunta} está vazio!`;
+
+  resposta.push(respostaCorreta);
+
+  for (let i = 1; i < 4; i++) {
+    respostaIncorreta = {
       text: document.getElementById(
-        `criar-pergunta${indiceDaPergunta}-respostaCorreta`
+        `criar-pergunta${indiceDaPergunta}-respostaIncorreta${i}`
       ).value,
       image: document.getElementById(
-        `criar-pergunta${indiceDaPergunta}-respostaCorretaURL`
-      ).value,
-      isCorrectAnswer: true,
-    },
-    {
-      text: document.getElementById(
-        `criar-pergunta${indiceDaPergunta}-respostaIncorreta1`
-      ).value,
-      image: document.getElementById(
-        `criar-pergunta${indiceDaPergunta}-respostaIncorreta1URL`
+        `criar-pergunta${indiceDaPergunta}-respostaIncorreta${i}URL`
       ).value,
       isCorrectAnswer: false,
-    },
-    {
-      text: document.getElementById(
-        `criar-pergunta${indiceDaPergunta}-respostaIncorreta2`
-      ).value,
-      image: document.getElementById(
-        `criar-pergunta${indiceDaPergunta}-respostaIncorreta2URL`
-      ).value,
-      isCorrectAnswer: false,
-    },
-    {
-      text: document.getElementById(
-        `criar-pergunta${indiceDaPergunta}-respostaIncorreta3`
-      ).value,
-      image: document.getElementById(
-        `criar-pergunta${indiceDaPergunta}-respostaIncorreta3URL`
-      ).value,
-      isCorrectAnswer: false,
-    },
-  ];
+    };
+    if(respostaIncorreta.text != null && respostaIncorreta.text != "")resposta.push(respostaIncorreta);
+  }
+
+  if(resposta.length < 2)throw `A pergunta ${indiceDaPergunta} deve ter pelo menos uma resposta incorreta!`
+
+  for(let i = 1; i < resposta.length; i++){
+    if (resposta[i].text == null || resposta[i].text == "")
+        throw `Texto da resposta incorreta da pergunta ${indiceDaPergunta} está vazio!`;
+    if (URLInvalida(resposta[i].image))
+      throw `URL da resposta incorreta da pergunta ${indiceDaPergunta} inválida!`;
+  }
 
   if (perguntaTexto < 20)
     throw `Texto da pergunta ${indiceDaPergunta} muito curto!`;
@@ -199,17 +205,6 @@ function validarPergunta(indiceDaPergunta) {
   };
 
   for (let i = 0; i < resposta.length; i++) {
-    if (resposta[i].text == null || resposta[i].text == "")
-      if (i === 0)
-        throw `Texto da resposta correta da pergunta ${indiceDaPergunta} está vazio!`;
-      else
-        throw `Texto da resposta incorreta ${i} da pergunta ${indiceDaPergunta} está vazio!`;
-    if (URLInvalida(resposta[i].image))
-      if (i === 0)
-        throw `URL da resposta correta da pergunta ${indiceDaPergunta} está vazio!`;
-      else
-        throw `URL da resposta incorreta ${i} da pergunta ${indiceDaPergunta} inválida!`;
-
     blueprintPergunta.answers.push(resposta[i]);
   }
 
