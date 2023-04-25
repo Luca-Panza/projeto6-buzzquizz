@@ -10,6 +10,7 @@ var numeroDePerguntas = 0;
 var numeroDeNiveis = 0;
 var tela3 = null;
 var existeNivelZero = false;
+var existeRespostaInvalida = false;
 
 function irParaTela3() {
   const tela3Comeco = `
@@ -104,23 +105,61 @@ function expandirDiv(secao) {
   acompanharTransition(avo);
 }
 
+function criarErro(el, str) {
+  if (!el.classList.contains("alerta")) {
+    let erro = document.createElement("i-erro");
+    el.classList.add("alerta");
+    erro.innerHTML = str;
+    el.after(erro);
+  }
+}
+
+function corrigirInput(inp) {
+  if (inp.classList.contains("alerta")) {
+    inp.classList.remove("alerta");
+    inp.nextElementSibling.remove();
+  }
+}
+
 function validarInfoDoQuizz() {
-  let titulo = document.getElementById("criar-quizz-titulo").value;
-  let URLquiz = document.getElementById("criar-quizz-url").value;
-
-  numeroDePerguntas = Number(
-    document.getElementById("criar-quizz-numeroDePerguntas").value
+  let existeInputInvalido = false;
+  let titulo = document.getElementById("criar-quizz-titulo");
+  let URLquiz = document.getElementById("criar-quizz-url");
+  let inputNumeroPerguntas = document.getElementById(
+    "criar-quizz-numeroDePerguntas"
   );
-  numeroDeNiveis = Number(
-    document.getElementById("criar-quizz-numeroDeNiveis").value
-  );
+  let inputNumeroNiveis = document.getElementById("criar-quizz-numeroDeNiveis");
 
-  if (titulo.length < 20) throw "Título muito curto!";
-  else if (titulo.length > 65) throw "Título muito grande!";
-  if (URLInvalida(URLquiz)) throw "URL inválida!";
-  else if (numeroDePerguntas < 3)
-    throw "O Quizz deve ter no mínimo 3 perguntas!";
-  else if (numeroDeNiveis < 2) throw "O Quizz deve ter no mínimo 2 níveis!";
+  numeroDePerguntas = Number(inputNumeroPerguntas.value);
+  numeroDeNiveis = Number(inputNumeroNiveis.value);
+
+  if (titulo.value.length < 20 || titulo.value === "") {
+    console.log(titulo.value.length);
+    corrigirInput(titulo);
+    criarErro(titulo, "Título muito curto!");
+    existeInputInvalido = true;
+  } else if (titulo.value.length > 65) {
+    corrigirInput(titulo);
+    criarErro(titulo, "Título muito grande!");
+    existeInputInvalido = true;
+  } else corrigirInput(titulo);
+
+  if (URLInvalida(URLquiz.value)) {
+    criarErro(URLquiz, "URL invalida!");
+    existeInputInvalido = true;
+  } else corrigirInput(URLquiz);
+
+  if (numeroDePerguntas < 3) {
+    criarErro(inputNumeroPerguntas, "O Quizz deve ter no mínimo 3 perguntas!");
+    existeInputInvalido = true;
+  } else corrigirInput(inputNumeroPerguntas);
+
+  if (numeroDeNiveis < 2) {
+    criarErro(inputNumeroNiveis, "O Quizz deve ter no mínimo 2 níveis!");
+    existeInputInvalido = true;
+  } else corrigirInput(inputNumeroNiveis);
+
+  if (existeInputInvalido) throw "Por favor, preencha corretamente!";
 
   quizz.title = titulo;
   quizz.image = URLquiz;
@@ -142,72 +181,120 @@ function irParaCriarPerguntas() {
 }
 
 function validarPergunta(indiceDaPergunta) {
+  let existeInputInvalido = false;
   let perguntaTexto = document.getElementById(
     `criar-pergunta${indiceDaPergunta}-texto`
-  ).value;
+  );
 
   let perguntaCor = document.getElementById(
     `criar-pergunta${indiceDaPergunta}-cor`
-  ).value;
+  );
 
-  let resposta = [];
+  let respostas = [{}];
 
-  let respostaCorreta = {
-    text: document.getElementById(
+  let inputCorreta = {
+    inpTextoCorreta: document.getElementById(
       `criar-pergunta${indiceDaPergunta}-respostaCorreta`
-    ).value,
-    image: document.getElementById(
+    ),
+    inpURLCorreta: document.getElementById(
       `criar-pergunta${indiceDaPergunta}-respostaCorretaURL`
-    ).value,
-    isCorrectAnswer: true,
-  };
-
-  let respostaIncorreta = {};
-
-  if (perguntaTexto < 20)
-    throw `Texto da pergunta ${indiceDaPergunta} muito curto!`;
-  if (!/^#[0-9A-F]{6}$/i.test(perguntaCor))
-    throw `Valor hexadecimal da pergunta ${indiceDaPergunta} inválido`;
-
-  if (respostaCorreta.text == null || respostaCorreta.text == "")
-    throw `Texto da resposta correta da pergunta ${indiceDaPergunta} está vazio!`;
-  if (URLInvalida(respostaCorreta.image))
-    throw `URL da resposta correta da pergunta ${indiceDaPergunta} está vazio!`;
-
-  resposta.push(respostaCorreta);
-
-  for (let i = 1; i < 4; i++) {
-    respostaIncorreta = {
+    ),
+    respostaCorreta: {
       text: document.getElementById(
-        `criar-pergunta${indiceDaPergunta}-respostaIncorreta${i}`
+        `criar-pergunta${indiceDaPergunta}-respostaCorreta`
       ).value,
       image: document.getElementById(
-        `criar-pergunta${indiceDaPergunta}-respostaIncorreta${i}URL`
+        `criar-pergunta${indiceDaPergunta}-respostaCorretaURL`
       ).value,
-      isCorrectAnswer: false,
+      isCorrectAnswer: true,
+    },
+  };
+
+  quizz.questions.push(inputCorreta.respostaCorreta);
+
+  if (perguntaTexto.value.length < 20) {
+    criarErro(perguntaTexto, "Texto da pergunta muito curto!");
+    existeInputInvalido = true;
+  } else corrigirInput(perguntaTexto);
+
+  if (!/^#[0-9A-F]{6}$/i.test(perguntaCor.value)) {
+    criarErro(perguntaCor, "Valor hexadecimal invalido!");
+    existeInputInvalido = true;
+  } else corrigirInput(perguntaCor);
+
+  if (
+    inputCorreta.respostaCorreta.text == null ||
+    inputCorreta.respostaCorreta.text == ""
+  ) {
+    criarErro(inputCorreta.inpTextoCorreta, "Texto da resposta esta vazio!");
+    existeInputInvalido = true;
+  } else corrigirInput(inputCorreta.inpTextoCorreta);
+
+  if (URLInvalida(inputCorreta.respostaCorreta.image)) {
+    criarErro(inputCorreta.inpURLCorreta, "URL invalida!");
+    existeInputInvalido = true;
+  } else corrigirInput(inputCorreta.inpURLCorreta);
+
+  for (let i = 1; i < 4; i++) {
+    let inputIncorreta = {
+      inpTextoIncorreta: document.getElementById(
+        `criar-pergunta${indiceDaPergunta}-respostaIncorreta${i}`
+      ),
+      inpURLIncorreta: document.getElementById(
+        `criar-pergunta${indiceDaPergunta}-respostaIncorreta${i}URL`
+      ),
+      respostaIncorreta: {
+        text: document.getElementById(
+          `criar-pergunta${indiceDaPergunta}-respostaIncorreta${i}`
+        ).value,
+        image: document.getElementById(
+          `criar-pergunta${indiceDaPergunta}-respostaIncorreta${i}URL`
+        ).value,
+        isCorrectAnswer: false,
+      },
     };
-    if (respostaIncorreta.text != null && respostaIncorreta.text != "")
-      resposta.push(respostaIncorreta);
+
+    if (
+      inputIncorreta.respostaIncorreta.text != null &&
+      inputIncorreta.respostaIncorreta.text != ""
+    ) {
+      console.log(i);
+      respostas.push(inputIncorreta);
+    }
   }
 
-  if (resposta.length < 2)
+  if (respostas.length < 2)
     throw `A pergunta ${indiceDaPergunta} deve ter pelo menos uma resposta incorreta!`;
+  else {
+    for (let i = 1; i < respostas.length; i++) {
+      console.log(respostas[i]);
+      if (
+        respostas[i].respostaIncorreta.text == null ||
+        respostas[i].respostaIncorreta.text == ""
+      ) {
+        criarErro(
+          respostas[i].inpTextoIncorreta,
+          "A resposta nao pode estar vazia!"
+        );
+        existeRespostaInvalida = true;
+      } else corrigirInput(respostas[i].inpTextoIncorreta);
 
-  for (let i = 1; i < resposta.length; i++) {
-    if (resposta[i].text == null || resposta[i].text == "")
-      throw `Texto da resposta incorreta da pergunta ${indiceDaPergunta} está vazio!`;
-    if (URLInvalida(resposta[i].image))
-      throw `URL da resposta incorreta da pergunta ${indiceDaPergunta} inválida!`;
+      if (URLInvalida(respostas[i].respostaIncorreta.image)) {
+        criarErro(respostas[i].inpURLIncorreta, "URL invalida!");
+        existeRespostaInvalida = true;
+      } else corrigirInput(respostas[i].inpURLIncorreta);
+    }
   }
+  if (existeInputInvalido) throw "Por favor, preencha corretamente!";
 
   let blueprintPergunta = {
-    title: perguntaTexto,
-    color: perguntaCor,
+    title: perguntaTexto.value,
+    color: perguntaCor.value,
     answers: [],
   };
 
-  for (let i = 0; i < resposta.length; i++) {
-    blueprintPergunta.answers.push(resposta[i]);
+  for (let i = 0; i < respostas.length; i++) {
+    blueprintPergunta.answers.push(respostas[i].respostaIncorreta);
   }
 
   quizz.questions.push(blueprintPergunta);
@@ -217,6 +304,10 @@ function irParaCriarNiveis() {
   try {
     for (let i = 1; i <= numeroDePerguntas; i++) {
       validarPergunta(i);
+    }
+    if (existeRespostaInvalida) {
+      existeRespostaInvalida = false;
+      throw "Por favor, preencha corretamente!";
     }
 
     tela3.innerHTML = "<h1>Agora, decida os níveis!</h1>";
