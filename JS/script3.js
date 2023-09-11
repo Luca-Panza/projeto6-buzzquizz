@@ -303,6 +303,7 @@ function validarPergunta(indiceDaPergunta) {
 
 function irParaCriarNiveis() {
 	try {
+		existeRespostaInvalida = false;
 		for (let i = 1; i <= numeroDePerguntas; i++) {
 			validarPergunta(i);
 		}
