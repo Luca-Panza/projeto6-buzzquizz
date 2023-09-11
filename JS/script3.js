@@ -1,18 +1,19 @@
 axios.defaults.headers.common["Authorization"] = "M813n9erPvENXeuGPzKDL1Iu";
 const body = document.querySelector("body");
 var quizz = {
-  title: "",
-  image: "",
-  questions: [],
-  levels: [],
+	title: "",
+	image: "",
+	questions: [],
+	levels: [],
 };
 var numeroDePerguntas = 0;
 var numeroDeNiveis = 0;
 var tela3 = null;
 var existeNivelZero = false;
+var existeRespostaInvalida = false;
 
 function irParaTela3() {
-  const tela3Comeco = `
+	const tela3Comeco = `
     <div class="tela-3">
       <h1>Comece pelo comeco</h1>
       <div class="caixa-inputs">
@@ -24,29 +25,29 @@ function irParaTela3() {
       <button onclick="irParaCriarPerguntas()" data-test="go-create-questions">Prosseguir pra criar perguntas</button>
     </div>
 `;
-  document.querySelector("body").innerHTML += tela3Comeco;
-  tela3 = document.querySelector(".tela-3");
+	document.querySelector("body").innerHTML += tela3Comeco;
+	tela3 = document.querySelector(".tela-3");
 }
 
 function scriptTela3() {
-  let paginaHome = document.querySelector(".page1");
-  let paginaQuizz = document.querySelector("parte-do-luca");
-  if (paginaHome != null) paginaHome.style.display = "none";
-  if (paginaQuizz != null) paginaQuizz.style.display = "none";
-  irParaTela3();
+	let paginaHome = document.querySelector(".page1");
+	let paginaQuizz = document.querySelector("parte-do-luca");
+	if (paginaHome != null) paginaHome.style.display = "none";
+	if (paginaQuizz != null) paginaQuizz.style.display = "none";
+	irParaTela3();
 }
 
 function URLInvalida(URLString) {
-  try {
-    const testeURL = new URL(URLString);
-    return false;
-  } catch (lixo) {
-    return true;
-  }
+	try {
+		const testeURL = new URL(URLString);
+		return false;
+	} catch (lixo) {
+		return true;
+	}
 }
 
 function gerarPergunta(indice) {
-  return `
+	return `
   <div class="secao pergunta" data-test="question-ctn">
         <div class="tituloSecao">
           <p>Pergunta ${indice}</p>
@@ -79,150 +80,243 @@ function gerarPergunta(indice) {
 }
 
 function gerarListaDePerguntas() {
-  for (let i = 1; i <= numeroDePerguntas; i++) {
-    tela3.innerHTML += gerarPergunta(i);
-  }
-  document.querySelector(".tela-3 > .secao").classList.add("expandida");
-  tela3.scrollTop = 0;
+	for (let i = 1; i <= numeroDePerguntas; i++) {
+		tela3.innerHTML += gerarPergunta(i);
+	}
+	document.querySelector(".tela-3 > .secao").classList.add("expandida");
+	tela3.scrollTop = 0;
 }
 
 function acompanharTransition(transicionando) {
-  let acompanhar = setInterval(() => {
-    transicionando.scrollIntoView();
-    tela3.scrollTop -= 75;
-  }, 10);
-  setTimeout(() => {
-    clearInterval(acompanhar);
-  }, 1000);
+	let acompanhar = setInterval(() => {
+		transicionando.scrollIntoView();
+		tela3.scrollTop -= 75;
+	}, 10);
+	setTimeout(() => {
+		clearInterval(acompanhar);
+	}, 1000);
 }
 
 function expandirDiv(secao) {
-  let avo = secao.parentNode.parentNode;
-  let expandidaAnteriormente = document.querySelector(".expandida");
-  expandidaAnteriormente.classList.remove("expandida");
-  avo.classList.add("expandida");
-  acompanharTransition(avo);
+	let avo = secao.parentNode.parentNode;
+	let expandidaAnteriormente = document.querySelector(".expandida");
+	expandidaAnteriormente.classList.remove("expandida");
+	avo.classList.add("expandida");
+	acompanharTransition(avo);
+}
+
+function criarErro(el, str) {
+	if (!el.classList.contains("alerta")) {
+		let erro = document.createElement("i-erro");
+		el.classList.add("alerta");
+		erro.innerHTML = str;
+		el.after(erro);
+	}
+}
+
+function corrigirInput(inp) {
+	if (inp.classList.contains("alerta")) {
+		inp.classList.remove("alerta");
+		inp.nextElementSibling.remove();
+	}
 }
 
 function validarInfoDoQuizz() {
-  let titulo = document.getElementById("criar-quizz-titulo").value;
-  let URLquiz = document.getElementById("criar-quizz-url").value;
+	let existeInputInvalido = false;
+	let titulo = document.getElementById("criar-quizz-titulo");
+	let URLquiz = document.getElementById("criar-quizz-url");
+	let inputNumeroPerguntas = document.getElementById(
+		"criar-quizz-numeroDePerguntas"
+	);
+	let inputNumeroNiveis = document.getElementById("criar-quizz-numeroDeNiveis");
 
-  numeroDePerguntas = Number(
-    document.getElementById("criar-quizz-numeroDePerguntas").value
-  );
-  numeroDeNiveis = Number(
-    document.getElementById("criar-quizz-numeroDeNiveis").value
-  );
+	numeroDePerguntas = Number(inputNumeroPerguntas.value);
+	numeroDeNiveis = Number(inputNumeroNiveis.value);
 
-  if (titulo.length < 20) throw "Título muito curto!";
-  else if (titulo.length > 65) throw "Título muito grande!";
-  if (URLInvalida(URLquiz)) throw "URL inválida!";
-  else if (numeroDePerguntas < 3)
-    throw "O Quizz deve ter no mínimo 3 perguntas!";
-  else if (numeroDeNiveis < 2) throw "O Quizz deve ter no mínimo 2 níveis!";
+	if (titulo.value.length < 20 || titulo.value === "") {
+		corrigirInput(titulo);
+		criarErro(titulo, "Título muito curto!");
+		existeInputInvalido = true;
+	} else if (titulo.value.length > 65) {
+		corrigirInput(titulo);
+		criarErro(titulo, "Título muito grande!");
+		existeInputInvalido = true;
+	} else corrigirInput(titulo);
 
-  quizz.title = titulo;
-  quizz.image = URLquiz;
+	if (URLInvalida(URLquiz.value)) {
+		criarErro(URLquiz, "URL inválida!");
+		existeInputInvalido = true;
+	} else corrigirInput(URLquiz);
+
+	if (numeroDePerguntas < 3) {
+		criarErro(inputNumeroPerguntas, "O Quizz deve ter no mínimo 3 perguntas!");
+		existeInputInvalido = true;
+	} else corrigirInput(inputNumeroPerguntas);
+
+	if (numeroDeNiveis < 2) {
+		criarErro(inputNumeroNiveis, "O Quizz deve ter no mínimo 2 níveis!");
+		existeInputInvalido = true;
+	} else corrigirInput(inputNumeroNiveis);
+
+	if (existeInputInvalido) throw "Por favor, preencha corretamente!";
+
+	quizz.title = titulo.value;
+	quizz.image = URLquiz.value;
 }
 
 function irParaCriarPerguntas() {
-  try {
-    validarInfoDoQuizz();
+	try {
+		validarInfoDoQuizz();
 
-    tela3.innerHTML = `
+		tela3.innerHTML = `
       <h1>Crie suas perguntas</h1>`;
-    gerarListaDePerguntas();
-    tela3.innerHTML += `
+		gerarListaDePerguntas();
+		tela3.innerHTML += `
   <button onclick="irParaCriarNiveis()" data-test="go-create-levels">Prosseguir pra criar níveis</button>`;
-  } catch (erro) {
-    alert(erro);
-    quizz.questions = [];
-  }
+	} catch (erro) {
+		alert(erro);
+		quizz.questions = [];
+	}
 }
 
 function validarPergunta(indiceDaPergunta) {
-  let perguntaTexto = document.getElementById(
-    `criar-pergunta${indiceDaPergunta}-texto`
-  ).value;
+	let existeInputInvalido = false;
+	let perguntaTexto = document.getElementById(
+		`criar-pergunta${indiceDaPergunta}-texto`
+	);
 
-  let perguntaCor = document.getElementById(
-    `criar-pergunta${indiceDaPergunta}-cor`
-  ).value;
+	let perguntaCor = document.getElementById(
+		`criar-pergunta${indiceDaPergunta}-cor`
+	);
 
-  let resposta = [];
+	let respostas = [];
 
-  let respostaCorreta = {
-    text: document.getElementById(
-      `criar-pergunta${indiceDaPergunta}-respostaCorreta`
-    ).value,
-    image: document.getElementById(
-      `criar-pergunta${indiceDaPergunta}-respostaCorretaURL`
-    ).value,
-    isCorrectAnswer: true,
-  };
+	let inputCorreta = {
+		inpTextoCorreta: document.getElementById(
+			`criar-pergunta${indiceDaPergunta}-respostaCorreta`
+		),
+		inpURLCorreta: document.getElementById(
+			`criar-pergunta${indiceDaPergunta}-respostaCorretaURL`
+		),
+		respostaCorreta: {
+			text: document.getElementById(
+				`criar-pergunta${indiceDaPergunta}-respostaCorreta`
+			).value,
+			image: document.getElementById(
+				`criar-pergunta${indiceDaPergunta}-respostaCorretaURL`
+			).value,
+			isCorrectAnswer: true,
+		},
+	};
 
-  let respostaIncorreta = {};
+	respostas.push(inputCorreta.respostaCorreta);
 
-  if (perguntaTexto < 20)
-    throw `Texto da pergunta ${indiceDaPergunta} muito curto!`;
-  if (!/^#[0-9A-F]{6}$/i.test(perguntaCor))
-    throw `Valor hexadecimal da pergunta ${indiceDaPergunta} inválido`;
+	if (perguntaTexto.value.length < 20) {
+		criarErro(perguntaTexto, "Texto da pergunta muito curto!");
+		existeInputInvalido = true;
+	} else corrigirInput(perguntaTexto);
 
-  if (respostaCorreta.text == null || respostaCorreta.text == "")
-    throw `Texto da resposta correta da pergunta ${indiceDaPergunta} está vazio!`;
-  if (URLInvalida(respostaCorreta.image))
-    throw `URL da resposta correta da pergunta ${indiceDaPergunta} está vazio!`;
+	if (!/^#[0-9A-F]{6}$/i.test(perguntaCor.value)) {
+		criarErro(perguntaCor, "Valor hexadecimal inválido!");
+		existeInputInvalido = true;
+	} else corrigirInput(perguntaCor);
 
-  resposta.push(respostaCorreta);
+	if (
+		inputCorreta.respostaCorreta.text == null ||
+		inputCorreta.respostaCorreta.text == ""
+	) {
+		criarErro(inputCorreta.inpTextoCorreta, "Texto da resposta está vazio!");
+		existeInputInvalido = true;
+	} else corrigirInput(inputCorreta.inpTextoCorreta);
 
-  for (let i = 1; i < 4; i++) {
-    respostaIncorreta = {
-      text: document.getElementById(
-        `criar-pergunta${indiceDaPergunta}-respostaIncorreta${i}`
-      ).value,
-      image: document.getElementById(
-        `criar-pergunta${indiceDaPergunta}-respostaIncorreta${i}URL`
-      ).value,
-      isCorrectAnswer: false,
-    };
-    if (respostaIncorreta.text != null && respostaIncorreta.text != "")
-      resposta.push(respostaIncorreta);
-  }
+	if (URLInvalida(inputCorreta.respostaCorreta.image)) {
+		criarErro(inputCorreta.inpURLCorreta, "URL inválida!");
+		existeInputInvalido = true;
+	} else corrigirInput(inputCorreta.inpURLCorreta);
 
-  if (resposta.length < 2)
-    throw `A pergunta ${indiceDaPergunta} deve ter pelo menos uma resposta incorreta!`;
+	for (let i = 1; i < 4; i++) {
+		let inputIncorreta = {
+			inpTextoIncorreta: document.getElementById(
+				`criar-pergunta${indiceDaPergunta}-respostaIncorreta${i}`
+			),
+			inpURLIncorreta: document.getElementById(
+				`criar-pergunta${indiceDaPergunta}-respostaIncorreta${i}URL`
+			),
+			respostaIncorreta: {
+				text: document.getElementById(
+					`criar-pergunta${indiceDaPergunta}-respostaIncorreta${i}`
+				).value,
+				image: document.getElementById(
+					`criar-pergunta${indiceDaPergunta}-respostaIncorreta${i}URL`
+				).value,
+				isCorrectAnswer: false,
+			},
+		};
 
-  for (let i = 1; i < resposta.length; i++) {
-    if (resposta[i].text == null || resposta[i].text == "")
-      throw `Texto da resposta incorreta da pergunta ${indiceDaPergunta} está vazio!`;
-    if (URLInvalida(resposta[i].image))
-      throw `URL da resposta incorreta da pergunta ${indiceDaPergunta} inválida!`;
-  }
+		if (
+			(inputIncorreta.respostaIncorreta.text != null &&
+				inputIncorreta.respostaIncorreta.text != "") ||
+			(inputIncorreta.respostaIncorreta.image != null &&
+				inputIncorreta.respostaIncorreta.image != "")
+		) {
+			respostas.push(inputIncorreta);
+		}
+	}
 
-  let blueprintPergunta = {
-    title: perguntaTexto,
-    color: perguntaCor,
-    answers: [],
-  };
+	if (respostas.length < 2)
+		throw `A pergunta ${indiceDaPergunta} deve ter pelo menos uma resposta incorreta!`;
+	else {
+		for (let i = 1; i < respostas.length; i++) {
+			if (
+				respostas[i].respostaIncorreta.text == null ||
+				respostas[i].respostaIncorreta.text == ""
+			) {
+				criarErro(
+					respostas[i].inpTextoIncorreta,
+					"A resposta nao pode estar vazia!"
+				);
+				existeRespostaInvalida = true;
+			} else corrigirInput(respostas[i].inpTextoIncorreta);
 
-  for (let i = 0; i < resposta.length; i++) {
-    blueprintPergunta.answers.push(resposta[i]);
-  }
+			if (URLInvalida(respostas[i].respostaIncorreta.image)) {
+				criarErro(respostas[i].inpURLIncorreta, "URL invalida!");
+				existeRespostaInvalida = true;
+			} else corrigirInput(respostas[i].inpURLIncorreta);
+		}
+	}
+	if (existeInputInvalido) throw "Por favor, preencha corretamente!";
 
-  quizz.questions.push(blueprintPergunta);
+	let blueprintPergunta = {
+		title: perguntaTexto.value,
+		color: perguntaCor.value,
+		answers: [],
+	};
+
+	blueprintPergunta.answers.push(respostas[0]);
+
+	for (let i = 1; i < respostas.length; i++) {
+		blueprintPergunta.answers.push(respostas[i].respostaIncorreta);
+	}
+
+	quizz.questions.push(blueprintPergunta);
 }
 
 function irParaCriarNiveis() {
-  try {
-    for (let i = 1; i <= numeroDePerguntas; i++) {
-      validarPergunta(i);
-    }
+	try {
+		existeRespostaInvalida = false;
+		for (let i = 1; i <= numeroDePerguntas; i++) {
+			validarPergunta(i);
+		}
+		if (existeRespostaInvalida) {
+			existeRespostaInvalida = false;
+			throw "Por favor, preencha corretamente!";
+		}
+		console.log(quizz);
 
-    tela3.innerHTML = "<h1>Agora, decida os níveis!</h1>";
+		tela3.innerHTML = "<h1>Agora, decida os níveis!</h1>";
 
-    for (let i = 1; i <= numeroDeNiveis; i++) {
-      tela3.innerHTML += `
+		for (let i = 1; i <= numeroDeNiveis; i++) {
+			tela3.innerHTML += `
     <div class="secao nivel" data-test="level-ctn">
         <div class="tituloSecao">
           <p>Nivel ${i}</p>
@@ -235,78 +329,100 @@ function irParaCriarNiveis() {
           <textarea id="criar-nivel${i}-descricao" data-test="level-description-input" type="text" placeholder="Descrição do nível"></textarea>
         </div>
       </div>`;
-    }
-    document.querySelector(".tela-3 > .secao").classList.add("expandida");
-    tela3.innerHTML += `<button onclick="finalizar()" data-test="finish">Finalizar Quizz</button>`;
-  } catch (erro) {
-    alert(erro);
-    quizz.questions = [];
-  }
+		}
+		document.querySelector(".tela-3 > .secao").classList.add("expandida");
+		tela3.innerHTML += `<button onclick="finalizar()" data-test="finish">Finalizar Quizz</button>`;
+	} catch (erro) {
+		alert(erro);
+		quizz.questions = [];
+	}
 }
 
 function validarNivel(indiceDoNivel) {
-  let tituloDoNivel = document.getElementById(
-    `criar-nivel${indiceDoNivel}-titulo`
-  ).value;
+	let tituloDoNivel = document.getElementById(
+		`criar-nivel${indiceDoNivel}-titulo`
+	);
 
-  let URLDoNivel = document.getElementById(
-    `criar-nivel${indiceDoNivel}-url`
-  ).value;
+	let URLDoNivel = document.getElementById(`criar-nivel${indiceDoNivel}-url`);
 
-  let descricaoDoNivel = document.getElementById(
-    `criar-nivel${indiceDoNivel}-descricao`
-  ).value;
+	let descricaoDoNivel = document.getElementById(
+		`criar-nivel${indiceDoNivel}-descricao`
+	);
 
-  let porcentoDoNivel = Number(
-    document.getElementById(`criar-nivel${indiceDoNivel}-porcento`).value
-  );
+	let porcentoDoNivel = document.getElementById(
+		`criar-nivel${indiceDoNivel}-porcento`
+	);
+	let existeInputInvalido = false;
 
-  if (tituloDoNivel.length < 10)
-    throw `Título do nível ${indiceDoNivel} deve ter no mínimo 10 letras!`;
-  else if (URLInvalida(URLDoNivel))
-    throw `URL do nível ${indiceDoNivel} inválida!`;
-  else if (descricaoDoNivel.length < 30)
-    throw `Descrição do nível ${indiceDoNivel} deve ter no mínimo 30 letras!`;
-  else if (porcentoDoNivel < 0 || porcentoDoNivel > 100)
-    throw `% do nível ${indiceDoNivel} deve ser um número de 0 a 100!`;
-  else if (porcentoDoNivel === 0) existeNivelZero = true;
+	if (tituloDoNivel.value.length < 10) {
+		criarErro(tituloDoNivel, "Título do nível deve ter no mínimo 10 letras!");
+		existeInputInvalido = true;
+	} else corrigirInput(tituloDoNivel);
 
-  let blueprintNivel = {
-    title: tituloDoNivel,
-    image: URLDoNivel,
-    text: descricaoDoNivel,
-    minValue: porcentoDoNivel,
-  };
+	if (URLInvalida(URLDoNivel.value)) {
+		criarErro(URLDoNivel, "URL inválida!");
+		existeInputInvalido = true;
+	} else corrigirInput(URLDoNivel);
 
-  quizz.levels.push(blueprintNivel);
+	if (descricaoDoNivel.value.length < 30) {
+		criarErro(
+			descricaoDoNivel,
+			"Descrição do nível deve ter no mínimo 30 letras!"
+		);
+		existeInputInvalido = true;
+	} else corrigirInput(descricaoDoNivel);
+
+	if (
+		Number(porcentoDoNivel.value) < 0 ||
+		Number(porcentoDoNivel.value) > 100 ||
+		isNaN(Number(porcentoDoNivel.value))
+	) {
+		criarErro(porcentoDoNivel, "Deve ser um número de 0 a 100!");
+		existeInputInvalido = true;
+	} else corrigirInput(porcentoDoNivel);
+
+	if (Number(porcentoDoNivel.value) === 0) existeNivelZero = true;
+
+	if (existeInputInvalido) throw "Por favor, preencha corretamente!";
+
+	let blueprintNivel = {
+		title: tituloDoNivel.value,
+		image: URLDoNivel.value,
+		text: descricaoDoNivel.value,
+		minValue: Number(porcentoDoNivel.value),
+	};
+
+	console.log(blueprintNivel);
+
+	quizz.levels.push(blueprintNivel);
 }
 
 function finalizar() {
-  try {
-    for (let i = 1; i <= numeroDeNiveis; i++) {
-      validarNivel(i);
-    }
-    if (!existeNivelZero) throw "Deve existir um nível com 0%!";
+	try {
+		for (let i = 1; i <= numeroDeNiveis; i++) {
+			validarNivel(i);
+		}
+		if (!existeNivelZero) throw "Deve existir um nível com 0%!";
 
-    let prom = axios.post(
-      "https://mock-api.driven.com.br/api/vm/buzzquizz/quizzes",
-      quizz
-    );
-    prom.then((resp) => {
-      let quizzCriado = {
-        id: resp.data.id,
-      };
+		let prom = axios.post(
+			"https://mock-api.driven.com.br/api/vm/buzzquizz/quizzes",
+			quizz
+		);
+		prom.then((resp) => {
+			let quizzCriado = {
+				id: resp.data.id,
+			};
 
-      let arrayDeQuizzes = JSON.parse(localStorage.getItem("ids"));
+			let arrayDeQuizzes = JSON.parse(localStorage.getItem("ids"));
 
-      if (arrayDeQuizzes === null) arrayDeQuizzes = [];
-      arrayDeQuizzes.push(quizzCriado);
+			if (arrayDeQuizzes === null) arrayDeQuizzes = [];
+			arrayDeQuizzes.push(quizzCriado);
 
-      localStorage.setItem("ids", JSON.stringify(arrayDeQuizzes));
+			localStorage.setItem("ids", JSON.stringify(arrayDeQuizzes));
 
-      const id_quiz = resp.data.id;
+			const id_quiz = resp.data.id;
 
-      tela3.innerHTML = ` 
+			tela3.innerHTML = ` 
       <h1>Seu quizz está pronto!</h1>
       <li class="resultado" data-id="${resp.data.id}" data-test="success-banner">
         <div class="gradient"></div>
@@ -318,13 +434,13 @@ function finalizar() {
       </li>
       <button class="acessar" onclick="start_quiz(${id_quiz})" data-test="go-quiz">Acessar Quizz</button>
       <button class="voltar" onclick="scriptTela1()" data-test="go-home">Voltar pra home</button>`;
-      existeNivelZero = false;
-    });
-    prom.catch((resp) => {
-      alert("Erro " + resp.response.status);
-    });
-  } catch (erro) {
-    alert(erro);
-    quizz.levels = [];
-  }
+			existeNivelZero = false;
+		});
+		prom.catch((resp) => {
+			alert("Erro " + resp.response.status);
+		});
+	} catch (erro) {
+		alert(erro);
+		quizz.levels = [];
+	}
 }
