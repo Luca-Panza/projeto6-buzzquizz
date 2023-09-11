@@ -128,11 +128,11 @@
 }
 
 .pergunta.expandida {
-  max-height: 875px;
+  max-height: 900px;
 }
 
 .nivel.expandida {
-  max-height: 603px;
+  max-height: 623px;
 }
 
 .secao {
@@ -250,7 +250,7 @@ i-erro{
   }
 
   .nivel.expandida {
-    max-height: 316px;
+    max-height: 360px;
   }
 
   .secao {
